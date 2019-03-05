@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', e=> {
   let tetrisGrid = document.querySelector('.tetris-grid')
-  let allTetromino = new Array()
+  let allTetromino = [tshape,line,square,jshape,lshape,sshape,zshape]
   let currentPiece = null
   let width = 10
   let height = 20
@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', e=> {
         case 37:
           direction = 'left'
           break
+        case 38:
+          rotateTetromino()
+          break
         case 39:
           direction = 'right'
           break
@@ -27,38 +30,82 @@ document.addEventListener('DOMContentLoaded', e=> {
       renderTetromino();
   }
 
-  function createTetrominos() {
-      let tshape = [[1, 0], [0,1], [1,1],[2,1]]
-      let line = [[0, 0], [0, 1], [0, 2], [0, 3]]
-      let square = [[0, 0], [0, 1], [1, 0], [1, 1]]
-      let lr = [[2,0], [0, 1], [1, 1], [2,1]]
-      let rl = [[0,0], [0, 1], [1, 1], [2,1]]
-      let sshape = [[0,0], [1, 0], [1, 1], [2,1]]
-      let zshape = [[2,0], [1, 0], [1, 1], [0,1]]
-      allTetromino.push(tshape,line,square,lr,rl,sshape,zshape)
+  function rotateTetromino() {
+    clearCurrent();
+    direction = 'rotate'
+    if (currentPiece.shape.rotation < currentPiece.shape.tetroshape.length - 1) {
+      currentPiece.shape.rotation++
+    } else {
+      currentPiece.shape.rotation = 0
+    }
+    renderTetromino();
+    direction = ''
+  }
+
+  function collision(xVal,yVal) {
+    let tetromino = currentPiece.shape.tetroshape[currentPiece.shape.rotation]
+    let location = currentPiece.location
+
+    let xArray = []
+    let yArray = []
+    for(let i = 0; i < tetromino.length; i++) {
+      for (let j = 0; j< tetromino.length; j++) {
+        let x = tetromino[j][0] + location[0] + xVal
+        let y = tetromino[j][1] + location[1] + yVal
+        // debugger
+        if (x === (-1)) {
+          direction = ''
+          return false
+        } else if (y === (-1)) {
+          direction = ''
+          return false
+        } else if (x === (width)) {
+          direction = ''
+          return false
+        } else if (y === (height)) {
+          createTetromino()
+          direction = ''
+          return false
+        } else if ((document.querySelector(`[data-x="${x}"][data-y="${y}"]`).classList[1])) {
+          createTetromino()
+          return false
+        }
+      }
+    }
+    return true
   }
 
   function renderTetromino() {
-    let tetromino = currentPiece.shape;
-    let location = currentPiece.location;
-    console.log(location)
+    // debugger
+    let tetromino = currentPiece.shape.tetroshape[currentPiece.shape.rotation]
+    let location = currentPiece.location
+    // debugger
+    // console.log(location)
     clearCurrent();
-
     // based on direction of block, set the offset
-    if (direction=="down")
-      currentPiece.location[1]++;
-    else if (direction=="left")
-      currentPiece.location[0]--;
-    else if (direction=="right")
-      currentPiece.location[0]++;
-
+    if (direction=="down" && collision(0,1)) {
+      currentPiece.location[1]++
+      direction = ''
+    } else if (direction=="left" && collision(-1,0)) {
+      currentPiece.location[0]--
+      direction = ''
+    }
+    else if (direction=="right" && collision(1,0)) {
+      currentPiece.location[0]++
+      direction = ''
+    }
+    else if (direction=="" && collision(0,1)) {
+      currentPiece.location[1]++
+      direction = ''
+    }
     // redraw the shape onto the board
     for(let i = 0; i < tetromino.length; i++) {
-        let x = tetromino[i][0] + location[0];
-        let y = tetromino[i][1] + location[1];
-        let cell = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
-        cell.classList.add('filled');
-        cell.style.backgroundColor = currentPiece.color;
+      let x = tetromino[i][0] + location[0]
+      let y = tetromino[i][1] + location[1]
+      let cell = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]')
+      cell.classList.add('filled')
+      cell.style.backgroundColor = currentPiece.color
+
     }
 
     // currentPiece.indexes = getBlockNumbers(currentPiece.shape, currentPiece.location);
@@ -66,16 +113,16 @@ document.addEventListener('DOMContentLoaded', e=> {
 
   function clearCurrent() {
     // reset all blocks
-    let shape = currentPiece.shape;
+    let shape = currentPiece.shape.tetroshape[currentPiece.shape.rotation];
     let location = currentPiece.location;
 
     for(let i = 0; i < shape.length; i++)
     {
-        let x = shape[i][0] + location[0];
-        let y = shape[i][1] + location[1];
-        let block = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
-        block.classList.remove('filled');
-        block.style.backgroundColor="";
+        let x = shape[i][0] + location[0]
+        let y = shape[i][1] + location[1]
+        let block = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]')
+        block.classList.remove('filled')
+        block.style.backgroundColor = ""
     }
   }
 
@@ -104,14 +151,18 @@ document.addEventListener('DOMContentLoaded', e=> {
   }
 
   function createTetromino() {
-      let randomTetromino = Math.floor(Math.random() * allTetromino.length);
-      let randomColor = Math.floor(Math.random() * colors.length);
-      let center = Math.floor(width / 2) - 1;
-      let shape = allTetromino[randomTetromino];
-      let location = [center, 0];
+      let randomTetromino = Math.floor(Math.random() * allTetromino.length)
+      let randomRotation = Math.floor(Math.random() * allTetromino[randomTetromino].length)
+      let randomColor = Math.floor(Math.random() * colors.length)
+      let center = Math.floor(width / 2) - 1
+      let shape = allTetromino[randomTetromino][randomRotation]
+      let location = [center, 0]
 
       currentPiece = {
-          shape: shape,
+          shape: {
+            tetroshape: allTetromino[randomTetromino],
+            rotation: randomRotation
+          },
           color: colors[randomColor],
           location: location,
           // indexes: getBlockNumbers(shape, location)
@@ -121,14 +172,14 @@ document.addEventListener('DOMContentLoaded', e=> {
 
   function start() {
       createBoard()
-      createTetrominos()
       createTetromino()
       renderTetromino()
       document.addEventListener('keydown', e => {
-        if ((e.keyCode == '40') || (e.keyCode == '37') || (e.keyCode == '39')) {
+        if ((e.keyCode == '40') || (e.keyCode == '37') || (e.keyCode == '39') || (e.keyCode == '38')) {
           checkKey(e)
         }
       })
+      setInterval(renderTetromino, 750)
   }
 
   start()

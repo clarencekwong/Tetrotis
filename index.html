@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <title>Tetris</title>
-    <script src="src/tetris.js" charset="utf-8"></script>
 
   </head>
   <style>
@@ -19,9 +18,27 @@
   .tetris-grid .row {
     line-height:21px;
   }
-
+  #score{
+    display: inline-block;
+  }
+  div{
+    font-size: 25px;
+    font-weight: bold;
+    font-family: monospace;
+    text-align: center;
+  }
+  canvas{
+    display: block;
+    margin:0 auto;
+  }
   </style>
   <body>
+    <!-- <canvas id="tetris" width="200" height="400"></canvas>
+    <div>
+        Score : <div id="score">0</div>
+    </div> -->
     <div class="tetris-grid"></div>
+    <script src="src/tetrominos.js" charset="utf-8"></script>
+    <script src="src/tetris.js" charset="utf-8"></script>
   </body>
 </html>
