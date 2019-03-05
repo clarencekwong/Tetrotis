@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', e=> {
       this.render()
     } else {
       this.render()
+      this.lock()
       selTetro = randomTetromino()
       color = randomColor()
       rotate = randomRotation(selTetro)
@@ -134,6 +135,41 @@ document.addEventListener('DOMContentLoaded', e=> {
     }
     return true
   }
+
+  Tetromino.prototype.lock = function() {
+    for (let i = 0; i < this.currentPiece.length; i++) {
+      let x = this.currentPiece[i][0] + this.location[0]
+      let y = this.currentPiece[i][1] + this.location[1]
+      document.querySelector(`[data-x="${x}"][data-y="${y}"]`).dataset.state = "1"
+      let tetrisGrid = document.querySelector('.tetris-grid')
+      // debugger
+    }
+    let counter = 0
+    let start = 0
+    for (let c = 0; c < height; c++) {
+      let filled = true
+      for (let r = 0; r < width; r++) {
+        let cell = document.querySelector(`[data-x="${r}"][data-y="${c}"]`)
+        if (cell.dataset.state === '0') {
+          filled = false
+          break;
+        }
+      }
+      if (filled) {
+        if (start === 0) {
+          start = c
+        }
+        counter++
+        for (let i = 0; i < width; i++) {
+          let cell = document.querySelector(`[data-x="${i}"][data-y="${c}"]`)
+          cell.dataset.state = "0"
+          cell.classList.remove('filled')
+          cell.style.backgroundColor = "white"
+        }
+      }
+    }
+  }
+
 
   function createBoard() {
     let tetrisGrid = document.querySelector('.tetris-grid')
