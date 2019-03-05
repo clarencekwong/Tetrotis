@@ -1,129 +1,138 @@
 document.addEventListener('DOMContentLoaded', e=> {
   let tetrisGrid = document.querySelector('.tetris-grid')
   let allTetromino = [tshape,line,square,jshape,lshape,sshape,zshape]
-  let currentPiece = null
   let width = 10
   let height = 20
   let colors = ['red','blue','orange','yellow','green', 'purple', 'gold', 'silver', 'cyan', 'black', 'grey']
-  let move = 0
-  let state = 0
-  let direction = ''
-  let occupiedBlocks = new Array()
+  let center = Math.floor(width / 2) - 1
+  let selTetro = randomTetromino()
+  let color = randomColor()
+  let rotate = randomRotation(selTetro)
+  let tetroPiece = new Tetromino(allTetromino[selTetro],color,rotate)
+  let dropStart = Date.now();
+  let gameOver = false;
 
-
-  function checkKey(e) {
-      e.preventDefault();
-      switch (e.keyCode) {
-        case 40:
-          direction = 'down'
-          break
-        case 37:
-          direction = 'left'
-          break
-        case 38:
-          rotateTetromino()
-          break
-        case 39:
-          direction = 'right'
-          break
-      }
-      renderTetromino();
+  function randomColor() {
+    return colors[Math.floor(Math.random() * colors.length)]
   }
 
-  function rotateTetromino() {
-    clearCurrent();
-    direction = 'rotate'
-    if (currentPiece.shape.rotation < currentPiece.shape.tetroshape.length - 1) {
-      currentPiece.shape.rotation++
-    } else {
-      currentPiece.shape.rotation = 0
+  function randomTetromino() {
+    return Math.floor(Math.random() * allTetromino.length)
+  }
+
+  function randomRotation(selTetro) {
+    return Math.floor(Math.random() * allTetromino[selTetro].length)
+  }
+
+  function Tetromino(tetromino,color,rotation) {
+    this.tetromino = tetromino
+    this.color = color
+    this.rotation = rotation
+    this.currentPiece = this.tetromino[this.rotation]
+    this.location = [4, 0]
+  }
+
+  Tetromino.prototype.render = function() {
+    for(let i = 0; i < this.currentPiece.length; i++) {
+      let x = this.currentPiece[i][0] + this.location[0]
+      let y = this.currentPiece[i][1] + this.location[1]
+      let cell = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]')
+      cell.classList.add('filled')
+      cell.style.backgroundColor = this.color
     }
-    renderTetromino();
-    direction = ''
   }
 
-  function collision(xVal,yVal) {
-    let tetromino = currentPiece.shape.tetroshape[currentPiece.shape.rotation]
-    let location = currentPiece.location
+  Tetromino.prototype.clear = function() {
+    for(let i = 0; i < this.currentPiece.length; i++) {
+        let x = this.currentPiece[i][0] + this.location[0]
+        let y = this.currentPiece[i][1] + this.location[1]
+        let cell = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]')
+        cell.classList.remove('filled')
+        cell.style.backgroundColor = ""
+    }
+  }
 
-    let xArray = []
-    let yArray = []
-    for(let i = 0; i < tetromino.length; i++) {
-      for (let j = 0; j< tetromino.length; j++) {
-        let x = tetromino[j][0] + location[0] + xVal
-        let y = tetromino[j][1] + location[1] + yVal
+  Tetromino.prototype.moveDown = function() {
+    this.clear()
+    if (this.collision(0,1,this.currentPiece)) {
+      // this.clear()
+      this.location[1]++
+      this.render()
+    } else {
+      this.render()
+      selTetro = randomTetromino()
+      color = randomColor()
+      rotate = randomRotation(selTetro)
+      tetroPiece = new Tetromino(allTetromino[selTetro],color,rotate)
+    }
+  }
+
+  Tetromino.prototype.moveLeft = function() {
+    this.clear()
+    if (this.collision(-1,0,this.currentPiece)) {
+      // this.clear()
+      this.location[0]--
+      this.render()
+    } else {
+      this.render()
+    }
+  }
+
+  Tetromino.prototype.moveRight = function() {
+    this.clear()
+    if (this.collision(1,0,this.currentPiece)) {
+      // this.clear()
+      this.location[0]++
+      this.render()
+    } else {
+      this.render()
+    }
+  }
+
+  Tetromino.prototype.rotate = function() {
+    this.clear()
+    let kick = 0;
+    if (this.collision(0,0)){
+        if (this.location[0] > width/2) {
+            kick = -1
+        } else {
+            kick = 1
+        }
+    }
+    if (this.collision(kick,0)) {
+        this.clear()
+        this.location[0] += kick;
+        if ((this.rotation < this.tetromino.length - 1) ) {
+          this.rotation++
+        } else {
+          this.rotation = 0
+        }
+        this.currentPiece = this.tetromino[this.rotation]
+        this.render()
+    }
+    this.render()
+  }
+
+  Tetromino.prototype.collision = function(xVal,yVal,tetromino) {
+    for(let i = 0; i < this.currentPiece.length; i++) {
+      for (let j = 0; j< this.currentPiece.length; j++) {
+        let x = this.currentPiece[j][0] + this.location[0] + xVal
+        let y = this.currentPiece[j][1] + this.location[1] + yVal
         // debugger
         if (x === (-1)) {
-          direction = ''
           return false
         } else if (y === (-1)) {
-          direction = ''
           return false
         } else if (x === (width)) {
-          direction = ''
           return false
         } else if (y === (height)) {
-          createTetromino()
-          direction = ''
           return false
         } else if ((document.querySelector(`[data-x="${x}"][data-y="${y}"]`).classList[1])) {
-          createTetromino()
           return false
         }
       }
     }
     return true
-  }
-
-  function renderTetromino() {
-    // debugger
-    let tetromino = currentPiece.shape.tetroshape[currentPiece.shape.rotation]
-    let location = currentPiece.location
-    // debugger
-    // console.log(location)
-    clearCurrent();
-    // based on direction of block, set the offset
-    if (direction=="down" && collision(0,1)) {
-      currentPiece.location[1]++
-      direction = ''
-    } else if (direction=="left" && collision(-1,0)) {
-      currentPiece.location[0]--
-      direction = ''
-    }
-    else if (direction=="right" && collision(1,0)) {
-      currentPiece.location[0]++
-      direction = ''
-    }
-    else if (direction=="" && collision(0,1)) {
-      currentPiece.location[1]++
-      direction = ''
-    }
-    // redraw the shape onto the board
-    for(let i = 0; i < tetromino.length; i++) {
-      let x = tetromino[i][0] + location[0]
-      let y = tetromino[i][1] + location[1]
-      let cell = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]')
-      cell.classList.add('filled')
-      cell.style.backgroundColor = currentPiece.color
-
-    }
-
-    // currentPiece.indexes = getBlockNumbers(currentPiece.shape, currentPiece.location);
-}
-
-  function clearCurrent() {
-    // reset all blocks
-    let shape = currentPiece.shape.tetroshape[currentPiece.shape.rotation];
-    let location = currentPiece.location;
-
-    for(let i = 0; i < shape.length; i++)
-    {
-        let x = shape[i][0] + location[0]
-        let y = shape[i][1] + location[1]
-        let block = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]')
-        block.classList.remove('filled')
-        block.style.backgroundColor = ""
-    }
   }
 
   function createBoard() {
@@ -142,7 +151,6 @@ document.addEventListener('DOMContentLoaded', e=> {
         col.dataset.y = y
         col.dataset.index = counter
         col.dataset.state = 0
-        col.innerHTML = "0 : " + counter
         row.appendChild(col)
         counter++
       }
@@ -150,37 +158,37 @@ document.addEventListener('DOMContentLoaded', e=> {
     }
   }
 
-  function createTetromino() {
-      let randomTetromino = Math.floor(Math.random() * allTetromino.length)
-      let randomRotation = Math.floor(Math.random() * allTetromino[randomTetromino].length)
-      let randomColor = Math.floor(Math.random() * colors.length)
-      let center = Math.floor(width / 2) - 1
-      let shape = allTetromino[randomTetromino][randomRotation]
-      let location = [center, 0]
+  document.addEventListener('keydown', e => {
+    switch (e.keyCode) {
+      case 40:
+        tetroPiece.moveDown()
+        break
+      case 37:
+        tetroPiece.moveLeft()
+        break
+      case 38:
+        tetroPiece.rotate()
+        break
+      case 39:
+        tetroPiece.moveRight()
+        break
+    }
+  })
 
-      currentPiece = {
-          shape: {
-            tetroshape: allTetromino[randomTetromino],
-            rotation: randomRotation
-          },
-          color: colors[randomColor],
-          location: location,
-          // indexes: getBlockNumbers(shape, location)
-      };
-  }
-
+  createBoard()
+  tetroPiece.render()
 
   function start() {
-      createBoard()
-      createTetromino()
-      renderTetromino()
-      document.addEventListener('keydown', e => {
-        if ((e.keyCode == '40') || (e.keyCode == '37') || (e.keyCode == '39') || (e.keyCode == '38')) {
-          checkKey(e)
-        }
-      })
-      setInterval(renderTetromino, 750)
+      let now = Date.now();
+      let delta = now - dropStart;
+      if(delta > 1000){
+          tetroPiece.moveDown();
+          dropStart = Date.now();
+      }
+      if(!gameOver){
+          requestAnimationFrame(start);
+      }
   }
 
-  start()
+  start();
 })
