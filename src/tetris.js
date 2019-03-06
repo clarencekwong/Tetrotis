@@ -168,7 +168,26 @@ document.addEventListener('DOMContentLoaded', e=> {
         }
       }
     }
+    for (let i = start-1; i>=0;i--) {
+      for (let x = 0; x<width;x++) {
+        // debugger
+        let y = i + counter;
+        let cell = document.querySelector(`[data-x="${x}"][data-y="${i}"]`)
+        let nextCell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`)
+        if (cell.dataset.state === "1") {
+          nextCell.style.backgroundColor = cell.style.backgroundColor
+          nextCell.dataset.state = "1"
+          nextCell.classList.add('filled')
+          cell.dataset.state = "0"
+          cell.classList.remove('filled')
+          cell.style.backgroundColor = "white"
+
+        }
+      }
+    }
   }
+
+
 
 
   function createBoard() {
