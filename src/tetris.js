@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', e=> {
   let allTetromino = [tshape,line,square,jshape,lshape,sshape,zshape]
   let width = 10
   let height = 20
-  let colors = ['red','blue','orange','yellow','green', 'purple', 'gold', 'silver', 'cyan', 'black', 'grey']
+  let colors = ['indianred','rosybrown','peachpuff','khaki','mediumseagreen', 'indigo', 'slateblue', 'plum', 'thistle', 'cornflowerblue', 'honeydew']
   let center = Math.floor(width / 2) - 1
   let selTetro = randomTetromino()
   let color = randomColor()
@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', e=> {
   let dropStart = Date.now();
   let gameOver = false;
   let score = 0
+  let scoreList = document.querySelector('.scoreboard')
+
 
   function randomColor() {
     return colors[Math.floor(Math.random() * colors.length)]
@@ -188,6 +190,7 @@ document.addEventListener('DOMContentLoaded', e=> {
           cell.dataset.state = "0"
           cell.classList.remove('filled')
           cell.style.backgroundColor = "white"
+          console.log('cleared a line')
         }
       }
     }
@@ -266,6 +269,21 @@ document.addEventListener('DOMContentLoaded', e=> {
       requestAnimationFrame(start)
     }
   }
+
+  const endPoint = 'http://localhost:3000/api/v1/scores';
+  fetch(endPoint)
+    .then(res => res.json())
+    .then(json =>
+      json.forEach(score => {
+        const markup = `
+        <li>
+          <span>${score.user} - ${score.score} </span>
+        </li>`;
+
+        scoreList.innerHTML += markup;
+      })
+    );
+
 
   start();
 })
