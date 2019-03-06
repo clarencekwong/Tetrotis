@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', e=> {
   let dropStart = Date.now();
   let gameOver = false;
   let score = 0
-  let scoreList = document.querySelector('.scoreboard')
   let hiscores = document.querySelector('#hiscores')
 
 
@@ -216,6 +215,8 @@ document.addEventListener('DOMContentLoaded', e=> {
   }
 
   function createBoard() {
+    document.querySelector('.score-board').innerHTML = `Score : <div id="score">0</div>`
+
     let tetrisGrid = document.querySelector('.tetris-grid')
     tetrisGrid.innerHTML = ''
     for (let y = 0; y < height; y++) {
@@ -252,8 +253,8 @@ document.addEventListener('DOMContentLoaded', e=> {
     }
   })
 
-  createBoard()
-  start();
+  // createBoard()
+  // start();
   function start() {
 
     let now = Date.now()
@@ -283,7 +284,47 @@ document.addEventListener('DOMContentLoaded', e=> {
         hiscores.innerHTML += markup;
       })
     })
+
+
+function renderStartMenu(){
+  document.querySelector('.start-menu').innerHTML += `
+  <ul>
+  <button id="startgame" class="button">Start Game</button>
+  <button id="top50" class="button">Top 50 Scores</button>
+  </ul>
+  `
+}
+
+document.querySelector('.start-menu').addEventListener("click", e=>{
+  if (e.target.id==="startgame") {
+    document.querySelector('.top50').innerHTML =``
+    document.querySelector('.start-menu').innerHTML = ``
+    console.log(e.target.id)
+    createBoard()
+    start()
+  } else if (e.target.id==="top50") {
+    document.querySelector('.top50').innerHTML = ""
+    const endPoint = 'http://localhost:3000/api/v1/scores'
+    fetch(endPoint)
+      .then(res => res.json())
+      .then(scores => {
+        let allScore = scores
+        allScore.sort((a,b) => {
+          return b.score - a.score
+        })
+        let top50 = allScore.slice(0,50)
+        top50.forEach(score => {
+          const markup = `
+            <p>${score.user} - ${score.score}</p>
+            `
+          document.querySelector('.top50').innerHTML += markup;
+        })
+      })
+
+  }
 })
+
+renderStartMenu()
 
 // MAIN MENU (div 300x500?) -> Start, help, leaderboard
 // START -> createboard() and start()
@@ -297,3 +338,4 @@ document.addEventListener('DOMContentLoaded', e=> {
 // new game + quit
 
 // additional feature -> pause, passive score
+})
