@@ -162,7 +162,6 @@ document.addEventListener('DOMContentLoaded', e=> {
       document.querySelector(`[data-x="${x}"][data-y="${y}"]`).dataset.state = "1"
       let tetrisGrid = document.querySelector('.tetris-grid')
       // debugger
-      console.log(this.location)
       if (this.location[0] === 4 && this.location[1] === 0) {
         gameOver = true
         console.log('lost')
@@ -219,7 +218,6 @@ document.addEventListener('DOMContentLoaded', e=> {
   function createBoard() {
     let tetrisGrid = document.querySelector('.tetris-grid')
     tetrisGrid.innerHTML = ''
-    counter = 0
     for (let y = 0; y < height; y++) {
       let row = document.createElement('div')
       row.className = 'row'
@@ -230,10 +228,8 @@ document.addEventListener('DOMContentLoaded', e=> {
         col.className = 'cell'
         col.dataset.x = x
         col.dataset.y = y
-        col.dataset.index = counter
         col.dataset.state = 0
         row.appendChild(col)
-        counter++
       }
       tetrisGrid.appendChild(row)
     }
@@ -255,8 +251,9 @@ document.addEventListener('DOMContentLoaded', e=> {
         break
     }
   })
-  
+
   createBoard()
+  start();
   function start() {
 
     let now = Date.now()
@@ -270,11 +267,17 @@ document.addEventListener('DOMContentLoaded', e=> {
     }
   }
 
-  const endPoint = 'http://localhost:3000/api/v1/scores';
+  const endPoint = 'http://localhost:3000/api/v1/scores'
   fetch(endPoint)
     .then(res => res.json())
-    .then(json =>
-      json.forEach(score => {
+    .then(scores => {
+      let allScore = scores
+      allScore.sort((a,b) => {
+        return b.score - a.score
+      })
+      let top10 = allScore.slice(0,10)
+      debugger
+      top10.forEach(score => {
         const markup = `
         <li>
           <span>${score.user} - ${score.score} </span>
@@ -282,8 +285,18 @@ document.addEventListener('DOMContentLoaded', e=> {
 
         scoreList.innerHTML += markup;
       })
-    );
-
-
-  start();
+    })
 })
+
+// MAIN MENU (div 300x500?) -> Start, help, leaderboard
+// START -> createboard() and start()
+// HELP -> instruction on the page?
+// LEADERBOARD -> show top 50?
+
+// GAME PAGE -> Score + board + top 10 leaderboard on the right?
+// Instructions?
+
+// GAME OVER SCREEN -> leave board on screen, enter name with submission
+// new game + quit 
+
+// additional feature -> pause, passive score
