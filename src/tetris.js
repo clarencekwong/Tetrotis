@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', e=> {
   let allTetromino = [tshape,line,square,jshape,lshape,sshape,zshape]
   let width = 10
   let height = 20
-  let colors = ['indianred','rosybrown','peachpuff','khaki','mediumseagreen', 'indigo', 'slateblue', 'plum', 'thistle', 'cornflowerblue', 'honeydew']
+  let colors = ['indianred','rosybrown','peachpuff','khaki', 'indigo', 'slateblue', 'plum', 'thistle', 'cornflowerblue', 'honeydew']
   let center = Math.floor(width / 2) - 1
   let selTetro = randomTetromino()
   let color = randomColor()
@@ -276,7 +276,6 @@ document.addEventListener('DOMContentLoaded', e=> {
         return b.score - a.score
       })
       let top10 = allScore.slice(0,10)
-      debugger
       top10.forEach(score => {
         const markup = `
         <li>
@@ -297,6 +296,6 @@ document.addEventListener('DOMContentLoaded', e=> {
 // Instructions?
 
 // GAME OVER SCREEN -> leave board on screen, enter name with submission
-// new game + quit 
+// new game + quit
 
 // additional feature -> pause, passive score

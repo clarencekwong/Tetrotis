@@ -2,42 +2,21 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Tetris</title>
-
+    <title>Tetrotis</title>
   </head>
-  <style>
-  .tetris-grid .cell {
-    width: 50px;
-    height: 50px;
-    border: solid 1px #ddd;
-    display: inline-block;
-    font-size: 8pt;
-    color: black;
-    text-align: center;
-  }
-  .tetris-grid .row {
-    line-height:21px;
-  }
-  #score{
-    display: inline-block;
-  }
-  div{
-    font-size: 25px;
-    font-weight: bold;
-    font-family: monospace;
-    text-align: center;
-  }
-  </style>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+  <link rel="stylesheet" href="src/index.css">
+  <script src="src/tetrominos.js" charset="utf-8"></script>
+  <script src="src/tetris.js" charset="utf-8"></script>
   <body>
-  <div>
-      Score : <div id="score">0</div>
-  </div>
-    <div class="tetris-grid"></div>
-    <script src="src/tetrominos.js" charset="utf-8"></script>
-    <script src="src/tetris.js" charset="utf-8"></script>
-    <div class = "scoreboard">
-      <h4> Leaderboard</h4>
-
+    <div class="container">
+      <div class="score-board">
+          Score : <div id="score">0</div>
+      </div>
+      <div class="tetris-grid"></div>
+      <div class="scoreboard">
+        <h4>Leaderboard</h4>
+      </div>
     </div>
   </body>
 </html>
