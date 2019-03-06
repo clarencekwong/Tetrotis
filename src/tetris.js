@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', e=> {
   let width = 10
   let height = 20
   let colors = ['indianred','rosybrown','peachpuff','khaki', 'indigo', 'slateblue', 'plum', 'thistle', 'cornflowerblue', 'honeydew']
-  let center = Math.floor(width / 2) - 1
   let selTetro = randomTetromino()
   let color = randomColor()
   let rotate = randomRotation(selTetro)
@@ -13,6 +12,7 @@ document.addEventListener('DOMContentLoaded', e=> {
   let gameOver = false;
   let score = 0
   let scoreList = document.querySelector('.scoreboard')
+  let hiscores = document.querySelector('#hiscores')
 
 
   function randomColor() {
@@ -278,11 +278,9 @@ document.addEventListener('DOMContentLoaded', e=> {
       let top10 = allScore.slice(0,10)
       top10.forEach(score => {
         const markup = `
-        <li>
-          <span>${score.user} - ${score.score} </span>
-        </li>`;
-
-        scoreList.innerHTML += markup;
+          <p>${score.user} - ${score.score}</p>
+          `
+        hiscores.innerHTML += markup;
       })
     })
 })
