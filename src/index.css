@@ -16,11 +16,12 @@ div {
   font-family: 'Roboto Slab', serif;
   text-align: center;
 }
-.left-half, .right-half {
+.left-half, .right-half, .center {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
+
 
 .container {
   display: flex;
@@ -37,4 +38,16 @@ div {
 .mainmenu {
   width: 150px;
   margin: auto;
+}
+
+.button {
+  background-color: mistyrose;
+  border: 5px groove whitesmoke;
+  border-radius: 12px;
+  color: indigo;
+  padding: 20px 40px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
 }
