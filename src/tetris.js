@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', e=> {
 
   Tetromino.prototype.moveDown = function() {
     this.clear()
-    if (this.collision(0,1,this.currentPiece)) {
+    if (this.collision(0,1)) {
       // this.clear()
       this.location[1]++
       this.render()
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', e=> {
 
   Tetromino.prototype.moveLeft = function() {
     this.clear()
-    if (this.collision(-1,0,this.currentPiece)) {
+    if (this.collision(-1,0)) {
       // this.clear()
       this.location[0]--
       this.render()
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', e=> {
 
   Tetromino.prototype.moveRight = function() {
     this.clear()
-    if (this.collision(1,0,this.currentPiece)) {
+    if (this.collision(1,0)) {
       // this.clear()
       this.location[0]++
       this.render()
@@ -94,12 +94,27 @@ document.addEventListener('DOMContentLoaded', e=> {
   Tetromino.prototype.rotate = function() {
     this.clear()
     let kick = 0;
-    if (this.collision(0,0)){
-        if (this.location[0] > width/2) {
-            kick = -1
+    let tetromino = this.tetromino
+    let color = this.color
+    let rotation = this.rotation
+    if ((this.rotation < this.tetromino.length - 1) ) {
+      rotation++
+    } else {
+      rotation = 0
+    }
+    let nextPattern = new Tetromino(tetromino,color,rotation)
+    nextPattern.location = this.location
+     // debugger
+    if (!nextPattern.collision(0,0)){
+      if (nextPattern.location[0] > width/2) {
+        if (nextPattern.tetromino[0][3].includes(3)) {
+          kick = -3
         } else {
-            kick = 1
+          kick = -1
         }
+      } else {
+          kick = 1
+      }
     }
     if (this.collision(kick,0)) {
         this.clear()
@@ -115,7 +130,7 @@ document.addEventListener('DOMContentLoaded', e=> {
     this.render()
   }
 
-  Tetromino.prototype.collision = function(xVal,yVal,tetromino) {
+  Tetromino.prototype.collision = function(xVal,yVal) {
     for(let i = 0; i < this.currentPiece.length; i++) {
       for (let j = 0; j< this.currentPiece.length; j++) {
         let x = this.currentPiece[j][0] + this.location[0] + xVal
@@ -123,7 +138,7 @@ document.addEventListener('DOMContentLoaded', e=> {
         // debugger
         if (x === (-1)) {
           return false
-        } else if (y === (-1)) {
+        } else if (y === (0)) {
           return false
         } else if (x === (width)) {
           return false
@@ -145,6 +160,12 @@ document.addEventListener('DOMContentLoaded', e=> {
       document.querySelector(`[data-x="${x}"][data-y="${y}"]`).dataset.state = "1"
       let tetrisGrid = document.querySelector('.tetris-grid')
       // debugger
+      console.log(this.location)
+      if (this.location[0] === 4 && this.location[1] === 0) {
+        gameOver = true
+        console.log('lost')
+        break;
+      }
     }
     let counter = 0
     let start = 0
@@ -177,7 +198,6 @@ document.addEventListener('DOMContentLoaded', e=> {
 
     for (let i = start-1; i>=0; i--) {
       for (let x = 0; x < width; x++) {
-        // debugger
         let y = i + counter;
         let cell = document.querySelector(`[data-x="${x}"][data-y="${i}"]`)
         let nextCell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`)
@@ -188,14 +208,10 @@ document.addEventListener('DOMContentLoaded', e=> {
           cell.dataset.state = "0"
           cell.classList.remove('filled')
           cell.style.backgroundColor = "white"
-
         }
       }
     }
   }
-
-
-
 
   function createBoard() {
     let tetrisGrid = document.querySelector('.tetris-grid')
@@ -236,20 +252,19 @@ document.addEventListener('DOMContentLoaded', e=> {
         break
     }
   })
-
+  
   createBoard()
-  tetroPiece.render()
-
   function start() {
-      let now = Date.now();
-      let delta = now - dropStart;
-      if(delta > 1000){
-          tetroPiece.moveDown();
-          dropStart = Date.now();
-      }
-      if(!gameOver){
-          requestAnimationFrame(start);
-      }
+
+    let now = Date.now()
+    let delta = now - dropStart
+    if(delta > 500){
+      tetroPiece.moveDown()
+      dropStart = Date.now()
+    }
+    if(!gameOver){
+      requestAnimationFrame(start)
+    }
   }
 
   start();
