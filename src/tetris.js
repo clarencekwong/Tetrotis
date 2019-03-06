@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', e=> {
   let tetroPiece = new Tetromino(allTetromino[selTetro],color,rotate)
   let dropStart = Date.now();
   let gameOver = false;
+  let score = 0
 
   function randomColor() {
     return colors[Math.floor(Math.random() * colors.length)]
@@ -137,6 +138,7 @@ document.addEventListener('DOMContentLoaded', e=> {
   }
 
   Tetromino.prototype.lock = function() {
+    let scoreboard = document.querySelector('#score')
     for (let i = 0; i < this.currentPiece.length; i++) {
       let x = this.currentPiece[i][0] + this.location[0]
       let y = this.currentPiece[i][1] + this.location[1]
@@ -168,8 +170,13 @@ document.addEventListener('DOMContentLoaded', e=> {
         }
       }
     }
-    for (let i = start-1; i>=0;i--) {
-      for (let x = 0; x<width;x++) {
+    if (counter > 0) {
+      score += counter * 10
+      scoreboard.innerHTML = score
+    }
+
+    for (let i = start-1; i>=0; i--) {
+      for (let x = 0; x < width; x++) {
         // debugger
         let y = i + counter;
         let cell = document.querySelector(`[data-x="${x}"][data-y="${i}"]`)
