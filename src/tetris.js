@@ -11,11 +11,9 @@ document.addEventListener('DOMContentLoaded', e=> {
   let tetroPiece = new Tetromino(allTetromino[selTetro],color,rotate)
   let dropStart = Date.now();
   let gameOver = false;
-<<<<<<< HEAD
-  let scoreBoard = document.querySelector("#score")
-=======
   let score = 0
->>>>>>> 25c88072526a6e9486cda12c911493cad6ebad37
+  let scoreList = document.querySelector('.scoreboard')
+
 
   function randomColor() {
     return colors[Math.floor(Math.random() * colors.length)]
@@ -256,6 +254,21 @@ document.addEventListener('DOMContentLoaded', e=> {
           requestAnimationFrame(start);
       }
   }
+
+  const endPoint = 'http://localhost:3000/api/v1/scores';
+  fetch(endPoint)
+    .then(res => res.json())
+    .then(json =>
+      json.forEach(score => {
+        const markup = `
+        <li>
+          <span>${score.user} - ${score.score} </span>
+        </li>`;
+
+        scoreList.innerHTML += markup;
+      })
+    );
+
 
   start();
 })
