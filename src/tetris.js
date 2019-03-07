@@ -58,6 +58,9 @@ document.addEventListener('DOMContentLoaded', e=> {
   }
 
   Tetromino.prototype.moveDown = function() {
+    let scoreboard = document.querySelector('#score')
+    score++
+    scoreboard.innerHTML = score
     this.clear()
     if (this.collision(0,1)) {
       // this.clear()
@@ -200,7 +203,7 @@ document.addEventListener('DOMContentLoaded', e=> {
       }
     }
     if (counter > 0) {
-      score += counter * 10
+      score += counter * 100
       scoreboard.innerHTML = score
       scoreboard2.innerHTML = score
     }
