@@ -7,10 +7,11 @@ document.addEventListener('DOMContentLoaded', e=> {
   let color = randomColor()
   let rotate = randomRotation(selTetro)
   let tetroPiece = new Tetromino(allTetromino[selTetro],color,rotate)
-  let dropStart = Date.now();
-  let gameOver = false;
-  let pauseToggle = false;
+  let dropStart = Date.now()
+  let gameOver = false
+  let pauseToggle = false
   let score = 0
+  let timer = 750
   const hiscores = document.querySelector('#hiscores')
   const submissionForm = document.querySelector('#subform')
   const restartBtn = document.querySelector('#restart')
@@ -312,7 +313,18 @@ document.addEventListener('DOMContentLoaded', e=> {
   function start() {
     let now = Date.now()
     let delta = now - dropStart
-    if (delta > 500) {
+    if (score === 2000) {
+      timer = 500
+    } else if (score === 5000) {
+      timer = 350
+    } else if (score === 10000) {
+      timer = 250
+    } else if (score === 20000) {
+      timer = 150
+    } else if (score === 50000) {
+      timer = 50
+    }
+    if (delta > timer) {
       tetroPiece.moveDown()
       dropStart = Date.now()
     }
