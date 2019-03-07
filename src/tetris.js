@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', e=> {
   let width = 10
   let height = 20
   let colors = ['indianred','rosybrown','peachpuff', 'slateblue', 'thistle', 'lightblue', 'lightpink', 'burlywood' ]
-
   let selTetro = randomTetromino()
   let color = randomColor()
   let rotate = randomRotation(selTetro)
