@@ -472,7 +472,6 @@ document.addEventListener('DOMContentLoaded', e=> {
     rotateSound = new Sound("assets/186669__fordps3__computer-boop.wav")
     multiClearSound = new Sound("assets/242855__plasterbrain__friend-request.ogg")
     gameBGM = new Sound("assets/179217__zagi2__kalinka-loop.wav")
-    rotateSound.volume = 0.5
   }
 
   renderSounds()

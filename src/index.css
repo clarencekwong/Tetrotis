@@ -78,3 +78,11 @@ div {
 body {
   background-color: snow;
 }
+
+.scoreboard {
+  border: 1px solid mistyrose;
+  border-radius: 5px;
+  max-width: 200px;
+  width: 100%;
+  margin: auto;
+}
