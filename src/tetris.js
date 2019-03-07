@@ -373,6 +373,7 @@ document.addEventListener('DOMContentLoaded', e=> {
 
   mainMenuBtn.addEventListener('click', e => {
     score = 0
+    document.querySelector('.top50').innerHTML = ``
     mainMenu.innerHTML = ''
     tetrisGrid.innerHTML = ''
     submissionField.style.display = 'none'
@@ -416,6 +417,7 @@ document.addEventListener('DOMContentLoaded', e=> {
   }
 
   document.querySelector('.start-menu').addEventListener("click", e=>{
+    let indexCount = 1
     if (e.target.id==="startgame") {
       document.querySelector('.top50').innerHTML =``
       document.querySelector('.start-menu').innerHTML = ``
@@ -423,7 +425,10 @@ document.addEventListener('DOMContentLoaded', e=> {
       createBoard()
       start()
     } else if (e.target.id==="top50") {
-      document.querySelector('.top50').innerHTML = ""
+      mainMenu.innerHTML = ``
+      document.querySelector('.top50').innerHTML = `
+      <h1>~*top 50*~</h1>
+      `
       const endPoint = 'http://localhost:3000/api/v1/scores'
       fetch(endPoint)
         .then(res => res.json())
@@ -434,10 +439,10 @@ document.addEventListener('DOMContentLoaded', e=> {
           })
           let top50 = allScore.slice(0,50)
           top50.forEach(score => {
-            const markup = `
-              <p>${score.user} - ${score.score}</p>
+            const markup =
+            document.querySelector('.top50').innerHTML += `
+              <p>${indexCount++}. ${score.user} - ${score.score}</p>
               `
-            document.querySelector('.top50').innerHTML += markup;
           })
         })
 
