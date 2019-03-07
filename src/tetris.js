@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', e=> {
-  const tetrisGrid = document.querySelector('.tetris-grid')
   let allTetromino = [tshape,line,square,jshape,lshape,sshape,zshape]
   let width = 10
   let height = 20
@@ -16,6 +15,9 @@ document.addEventListener('DOMContentLoaded', e=> {
   const submissionForm = document.querySelector('#subform')
   const restartBtn = document.querySelector('#restart')
   const submissionField = document.querySelector('.submission')
+  const mainMenuBtn = document.querySelector('.mainmenu')
+  const endPoint = 'http://localhost:3000/api/v1/scores'
+  const tetrisGrid = document.querySelector('.tetris-grid')
 
 
   function randomColor() {
@@ -61,9 +63,11 @@ document.addEventListener('DOMContentLoaded', e=> {
   Tetromino.prototype.moveDown = function() {
     let scoreboard = document.querySelector('.score-board > div')
     let scoreboard2 = document.querySelector('.score')
-    score++
-    scoreboard.innerHTML = score
-    scoreboard2.innerHTML = score
+    if (!gameOver && !pauseToggle) {
+      score++
+      scoreboard.innerHTML = score
+      scoreboard2.innerHTML = score
+    }
     this.clear()
     if (this.collision(0,1)) {
       // this.clear()
@@ -277,8 +281,7 @@ document.addEventListener('DOMContentLoaded', e=> {
     console.log(pauseToggle)
     start()
   }
-  // createBoard()
-  // start();
+
   function start() {
     let now = Date.now()
     let delta = now - dropStart
@@ -293,6 +296,8 @@ document.addEventListener('DOMContentLoaded', e=> {
 
   function submitScore() {
     submissionField.style.display = 'inline-flex'
+    submissionForm.reset()
+    submissionForm.style.display = ''
   }
 
   submissionForm.addEventListener('submit', e => {
@@ -306,12 +311,17 @@ document.addEventListener('DOMContentLoaded', e=> {
         "Accept":"application/json"
       },
       body: JSON.stringify({
-        user: username,
-        score: score
+        score: {
+          user: username,
+          score: score
+        }
       })
     })
     .then(res => res.json())
-    .then(console.log)
+    .then(e => {
+      fetchPoint()
+      submissionForm.style.display = 'none'
+    })
   })
 
   restartBtn.addEventListener('click', e => {
@@ -322,43 +332,12 @@ document.addEventListener('DOMContentLoaded', e=> {
     start()
   })
 
-  const endPoint = 'http://localhost:3000/api/v1/scores'
-  fetch(endPoint)
-    .then(res => res.json())
-    .then(scores => {
-      let allScore = scores
-      allScore.sort((a,b) => {
-        return b.score - a.score
-      })
-      let top10 = allScore.slice(0,10)
-      top10.forEach(score => {
-        const markup = `
-          <p>${score.user} - ${score.score}</p>
-          `
-        hiscores.innerHTML += markup;
-      })
-    })
+  mainMenuBtn.addEventListener('click', e => {
 
+  })
 
-function renderStartMenu(){
-  document.querySelector('.start-menu').innerHTML += `
-  <ul>
-  <button id="startgame" class="button">Start Game</button>
-  <button id="top50" class="button">Top 50 Scores</button>
-  </ul>
-  `
-}
-
-document.querySelector('.start-menu').addEventListener("click", e=>{
-  if (e.target.id==="startgame") {
-    document.querySelector('.top50').innerHTML =``
-    document.querySelector('.start-menu').innerHTML = ``
-    console.log(e.target.id)
-    createBoard()
-    start()
-  } else if (e.target.id==="top50") {
-    document.querySelector('.top50').innerHTML = ""
-    const endPoint = 'http://localhost:3000/api/v1/scores'
+  function fetchPoint() {
+    hiscores.innerHTML = ''
     fetch(endPoint)
       .then(res => res.json())
       .then(scores => {
@@ -366,19 +345,57 @@ document.querySelector('.start-menu').addEventListener("click", e=>{
         allScore.sort((a,b) => {
           return b.score - a.score
         })
-        let top50 = allScore.slice(0,50)
-        top50.forEach(score => {
+        let top10 = allScore.slice(0,10)
+        top10.forEach(score => {
           const markup = `
             <p>${score.user} - ${score.score}</p>
             `
-          document.querySelector('.top50').innerHTML += markup;
+          hiscores.innerHTML += markup;
         })
       })
-
   }
-})
 
-renderStartMenu()
+  fetchPoint()
+
+  function renderStartMenu(){
+    document.querySelector('.start-menu').innerHTML += `
+    <ul>
+    <button id="startgame" class="button">Start Game</button>
+    <button id="top50" class="button">Top 50 Scores</button>
+    </ul>
+    `
+  }
+
+  document.querySelector('.start-menu').addEventListener("click", e=>{
+    if (e.target.id==="startgame") {
+      document.querySelector('.top50').innerHTML =``
+      document.querySelector('.start-menu').innerHTML = ``
+      console.log(e.target.id)
+      createBoard()
+      start()
+    } else if (e.target.id==="top50") {
+      document.querySelector('.top50').innerHTML = ""
+      const endPoint = 'http://localhost:3000/api/v1/scores'
+      fetch(endPoint)
+        .then(res => res.json())
+        .then(scores => {
+          let allScore = scores
+          allScore.sort((a,b) => {
+            return b.score - a.score
+          })
+          let top50 = allScore.slice(0,50)
+          top50.forEach(score => {
+            const markup = `
+              <p>${score.user} - ${score.score}</p>
+              `
+            document.querySelector('.top50').innerHTML += markup;
+          })
+        })
+
+    }
+  })
+
+  renderStartMenu()
 
 // MAIN MENU (div 300x500?) -> Start, help, leaderboard
 // START -> createboard() and start()
