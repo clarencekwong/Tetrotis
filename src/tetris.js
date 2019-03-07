@@ -386,6 +386,7 @@ document.addEventListener('DOMContentLoaded', e=> {
   })
 
   function fetchPoint() {
+    indexCount = 1
     hiscores.innerHTML = ''
     fetch(endPoint)
       .then(res => res.json())
@@ -397,7 +398,7 @@ document.addEventListener('DOMContentLoaded', e=> {
         let top10 = allScore.slice(0,10)
         top10.forEach(score => {
           const markup = `
-            <p>${score.user} - ${score.score}</p>
+            <p>${indexCount++}. ${score.user} - ${score.score}</p>
             `
           hiscores.innerHTML += markup;
         })
