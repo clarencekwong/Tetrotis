@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', e=> {
   let tetroPiece = new Tetromino(allTetromino[selTetro],color,rotate)
   let dropStart = Date.now();
   let gameOver = false;
+  let pauseToggle = false;
   let score = 0
   const hiscores = document.querySelector('#hiscores')
   const submissionForm = document.querySelector('#subform')
@@ -58,9 +59,13 @@ document.addEventListener('DOMContentLoaded', e=> {
   }
 
   Tetromino.prototype.moveDown = function() {
-    let scoreboard = document.querySelector('#score')
-    score++
-    scoreboard.innerHTML = score
+    let scoreboard = document.querySelector('.score-board > div')
+    let scoreboard2 = document.querySelector('.score')
+    if (!gameOver) {
+      score++
+      scoreboard.innerHTML = score
+      scoreboard2.innerHTML = score
+    }
     this.clear()
     if (this.collision(0,1)) {
       // this.clear()
@@ -261,9 +266,15 @@ document.addEventListener('DOMContentLoaded', e=> {
       case 39:
         tetroPiece.moveRight()
         break
+      case 80:
+        togglePause()
+        break
     }
   })
 
+  function togglePause() {
+    pauseToggle = !pauseToggle
+  }
   // createBoard()
   // start();
   function start() {
@@ -273,7 +284,7 @@ document.addEventListener('DOMContentLoaded', e=> {
       tetroPiece.moveDown()
       dropStart = Date.now()
     }
-    if(!gameOver){
+    if(!gameOver && !togglePause){
       requestAnimationFrame(start)
     }
   }
