@@ -68,3 +68,13 @@ div {
 .submissionInner {
   margin: auto;
 }
+
+#title {
+  font-family: 'Suez One', serif;
+  font-size: 35px;
+  color: tomato;
+}
+
+body {
+  background-color: snow;
+}

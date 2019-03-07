@@ -183,6 +183,7 @@ document.addEventListener('DOMContentLoaded', e=> {
         gameOver = true
         console.log('lost')
         submitScore()
+        gameOverSound.play()
         break;
       }
     }
@@ -206,18 +207,41 @@ document.addEventListener('DOMContentLoaded', e=> {
           let cell = document.querySelector(`[data-x="${i}"][data-y="${c}"]`)
           cell.dataset.state = "0"
           cell.classList.remove('filled')
-          cell.style.backgroundColor = "white"
+          cell.style.backgroundColor = "snow"
           console.log('cleared a line')
         }
       }
     }
     if (counter > 0) {
-      score += counter * 100
-      scoreboard.innerHTML = score
-      scoreboard2.innerHTML = score
+      switch (counter) {
+        case 1:
+          score += counter * 100
+          scoreboard.innerHTML = score
+          scoreboard2.innerHTML = score
+          clearLineSound.play()
+          break;
+        case 2:
+          score += counter * 150
+          scoreboard.innerHTML = score
+          scoreboard2.innerHTML = score
+          multiClearSound.play()
+          break;
+        case 3:
+          score += counter * 200
+          scoreboard.innerHTML = score
+          scoreboard2.innerHTML = score
+          multiClearSound.play()
+          break;
+        case 4:
+          score += counter * 300
+          scoreboard.innerHTML = score
+          scoreboard2.innerHTML = score
+          multiClearSound.play()
+          break;
+      }
     }
 
-    for (let i = start-1; i>=0; i--) {
+    for (let i = start-1; i >= 0; i--) {
       for (let x = 0; x < width; x++) {
         let y = i + counter;
         let cell = document.querySelector(`[data-x="${x}"][data-y="${i}"]`)
@@ -228,7 +252,7 @@ document.addEventListener('DOMContentLoaded', e=> {
           nextCell.classList.add('filled')
           cell.dataset.state = "0"
           cell.classList.remove('filled')
-          cell.style.backgroundColor = "white"
+          cell.style.backgroundColor = "snow"
         }
       }
     }
@@ -236,7 +260,7 @@ document.addEventListener('DOMContentLoaded', e=> {
 
   function createBoard() {
     document.querySelector('.score-board').innerHTML = `Score : <div class="score">0</div>`
-
+    gameBGM.play()
     let tetrisGrid = document.querySelector('.tetris-grid')
     tetrisGrid.innerHTML = ''
     for (let y = 0; y < height; y++) {
@@ -270,6 +294,7 @@ document.addEventListener('DOMContentLoaded', e=> {
           break
         case 38:
           tetroPiece.rotate()
+          rotateSound.play()
           break
         case 39:
           tetroPiece.moveRight()
@@ -371,10 +396,11 @@ document.addEventListener('DOMContentLoaded', e=> {
   function renderStartMenu(){
     document.querySelector('.start-menu').innerHTML += `
     <ul>
-    <button id="startgame" class="button">Start Game</button>
-    <button id="top50" class="button">Top 50 Scores</button>
+    <button id="startgame" class="button">start game</button>
+    <button id="top50" class="button">top 50 scores</button>
     </ul>
     `
+    gameBGM.stop()
   }
 
   document.querySelector('.start-menu').addEventListener("click", e=>{
@@ -406,7 +432,43 @@ document.addEventListener('DOMContentLoaded', e=> {
     }
   })
 
+  function Sound(src) {
+    this.sound = document.createElement("audio")
+    this.sound.src = src
+    this.sound.setAttribute("preload", "auto")
+    this.sound.setAttribute("controls", "none")
+    this.sound.style.display = "none"
+    document.body.appendChild(this.sound)
+  }
+
+  Sound.prototype.play = function(){
+    this.sound.play();
+  }
+
+  Sound.prototype.stop = function(){
+    this.sound.pause();
+  }
+
+  function renderSounds() {
+    clearLineSound = new Sound("assets/208495__porphyr__analog-synth-01-c.wav")
+    gameOverSound = new Sound("assets/gameover.wav")
+    rotateSound = new Sound("assets/186669__fordps3__computer-boop.wav")
+    multiClearSound = new Sound("assets/242855__plasterbrain__friend-request.ogg")
+    gameBGM = new Sound("assets/179217__zagi2__kalinka-loop.wav")
+    rotateSound.volume = 0.5
+  }
+
+  renderSounds()
   renderStartMenu()
+
+  const gameBGMAudio = document.querySelector('body > audio:nth-child(8)')
+
+  gameBGMAudio.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+  }, false);
+
+
 
 // MAIN MENU (div 300x500?) -> Start, help, leaderboard
 // START -> createboard() and start()
