@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', e=> {
-  let tetrisGrid = document.querySelector('.tetris-grid')
+  const tetrisGrid = document.querySelector('.tetris-grid')
   let allTetromino = [tshape,line,square,jshape,lshape,sshape,zshape]
   let width = 10
   let height = 20
@@ -11,7 +11,10 @@ document.addEventListener('DOMContentLoaded', e=> {
   let dropStart = Date.now();
   let gameOver = false;
   let score = 0
-  let hiscores = document.querySelector('#hiscores')
+  const hiscores = document.querySelector('#hiscores')
+  const submissionForm = document.querySelector('#subform')
+  const restartBtn = document.querySelector('#restart')
+  const submissionField = document.querySelector('.submission')
 
 
   function randomColor() {
@@ -63,10 +66,12 @@ document.addEventListener('DOMContentLoaded', e=> {
     } else {
       this.render()
       this.lock()
-      selTetro = randomTetromino()
-      color = randomColor()
-      rotate = randomRotation(selTetro)
-      tetroPiece = new Tetromino(allTetromino[selTetro],color,rotate)
+      if (!gameOver) {
+        selTetro = randomTetromino()
+        color = randomColor()
+        rotate = randomRotation(selTetro)
+        tetroPiece = new Tetromino(allTetromino[selTetro],color,rotate)
+      }
     }
   }
 
@@ -154,7 +159,8 @@ document.addEventListener('DOMContentLoaded', e=> {
   }
 
   Tetromino.prototype.lock = function() {
-    let scoreboard = document.querySelector('#score')
+    let scoreboard = document.querySelector('.score-board > div')
+    let scoreboard2 = document.querySelector('.score')
     for (let i = 0; i < this.currentPiece.length; i++) {
       let x = this.currentPiece[i][0] + this.location[0]
       let y = this.currentPiece[i][1] + this.location[1]
@@ -164,6 +170,7 @@ document.addEventListener('DOMContentLoaded', e=> {
       if (this.location[0] === 4 && this.location[1] === 0) {
         gameOver = true
         console.log('lost')
+        submitScore()
         break;
       }
     }
@@ -195,6 +202,7 @@ document.addEventListener('DOMContentLoaded', e=> {
     if (counter > 0) {
       score += counter * 10
       scoreboard.innerHTML = score
+      scoreboard2.innerHTML = score
     }
 
     for (let i = start-1; i>=0; i--) {
@@ -215,7 +223,7 @@ document.addEventListener('DOMContentLoaded', e=> {
   }
 
   function createBoard() {
-    document.querySelector('.score-board').innerHTML = `Score : <div id="score">0</div>`
+    document.querySelector('.score-board').innerHTML = `Score : <div class="score">0</div>`
 
     let tetrisGrid = document.querySelector('.tetris-grid')
     tetrisGrid.innerHTML = ''
@@ -256,10 +264,9 @@ document.addEventListener('DOMContentLoaded', e=> {
   // createBoard()
   // start();
   function start() {
-
     let now = Date.now()
     let delta = now - dropStart
-    if(delta > 500){
+    if (delta > 500) {
       tetroPiece.moveDown()
       dropStart = Date.now()
     }
@@ -267,6 +274,37 @@ document.addEventListener('DOMContentLoaded', e=> {
       requestAnimationFrame(start)
     }
   }
+
+  function submitScore() {
+    submissionField.style.display = 'inline-flex'
+  }
+
+  submissionForm.addEventListener('submit', e => {
+    e.preventDefault();
+    let username = document.querySelector('#username').value
+    let score = parseInt(document.querySelector('.score').innerHTML)
+    fetch(endPoint, {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      },
+      body: JSON.stringify({
+        user: username,
+        score: score
+      })
+    })
+    .then(res => res.json())
+    .then(console.log)
+  })
+
+  restartBtn.addEventListener('click', e => {
+    gameOver = false
+    submissionField.style.display = 'none'
+    score = 0
+    createBoard()
+    start()
+  })
 
   const endPoint = 'http://localhost:3000/api/v1/scores'
   fetch(endPoint)
