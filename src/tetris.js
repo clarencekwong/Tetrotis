@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', e=> {
     } else if (e.target.id==="top50") {
       mainMenu.innerHTML = ``
       document.querySelector('.top50').innerHTML = `
-      <h1>~*top 50*~</h1>
+      <h1>~*top 50*~</h1> <br>
       `
       const endPoint = 'http://localhost:3000/api/v1/scores'
       fetch(endPoint)
