@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', e=> {
   const mainMenuBtn = document.querySelector('.mainmenu')
   const endPoint = 'http://localhost:3000/api/v1/scores'
   const tetrisGrid = document.querySelector('.tetris-grid')
+  const mainMenu = document.querySelector('.start-menu')
+  const gameScoreBoard = document.querySelector('.score-board')
 
 
   function randomColor() {
@@ -333,7 +335,16 @@ document.addEventListener('DOMContentLoaded', e=> {
   })
 
   mainMenuBtn.addEventListener('click', e => {
-
+    score = 0
+    mainMenu.innerHTML = ''
+    tetrisGrid.innerHTML = ''
+    submissionField.style.display = 'none'
+    gameScoreBoard.innerHTML = ''
+    renderStartMenu()
+    selTetro = randomTetromino()
+    color = randomColor()
+    rotate = randomRotation(selTetro)
+    tetroPiece = new Tetromino(allTetromino[selTetro],color,rotate)
   })
 
   function fetchPoint() {
