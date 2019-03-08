@@ -512,8 +512,6 @@ document.addEventListener('DOMContentLoaded', e=> {
     this.currentTime = 0;
     this.play();
   }, false);
-<<<<<<< HEAD
-=======
   colorMenu.addEventListener("change", changeColorSet)
 
 
@@ -530,5 +528,4 @@ document.addEventListener('DOMContentLoaded', e=> {
 // new game + quit
 
 // additional feature -> pause, passive score
->>>>>>> color-schemes
 })
