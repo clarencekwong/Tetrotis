@@ -9,8 +9,9 @@
   display: inline-block;
 }
 .score-board, #score, .scoreboard {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 17px;
+  color:black;
+  font-weight: medium;
 }
 div {
   font-family: 'Roboto Slab', serif;
@@ -53,11 +54,11 @@ div {
 }
 
 .submission {
-  background-color: white;
-  border: 2px solid black;
+  background-color:snow;
+  border: 2px groove mistyrose;
   border-radius: 20px;
   height: 25%;
-  width: 50%;
+  width: 30%;
   position: absolute;
   z-index: 1;
   margin-left: 24%;
@@ -85,4 +86,9 @@ body {
   max-width: 200px;
   width: 100%;
   margin: auto;
+}
+
+h4 {
+  font-size:22px;
+  font-weight:bold;
 }
