@@ -212,6 +212,7 @@ document.addEventListener('DOMContentLoaded', e=> {
             cell.style.backgroundColor = previousCell.style.backgroundColor
             if (previousCell.classList.length === 2) {
               continue;
+
             } else {
               cell.classList.remove('filled')
             }
@@ -222,6 +223,7 @@ document.addEventListener('DOMContentLoaded', e=> {
           cell.style.backgroundColor = 'snow'
         }
         switch (counter) {
+
           case 1:
             score += counter * 100
             scoreboard.innerHTML = score
@@ -305,16 +307,16 @@ document.addEventListener('DOMContentLoaded', e=> {
   function start() {
     let now = Date.now()
     let delta = now - dropStart
-    if (score === 2000) {
-      timer = 500
-    } else if (score === 5000) {
-      timer = 350
-    } else if (score === 10000) {
-      timer = 250
-    } else if (score === 20000) {
-      timer = 150
-    } else if (score === 50000) {
+    if (score >= 50000) {
       timer = 50
+    } else if (score >= 20000) {
+      timer = 150
+    } else if (score >= 10000) {
+      timer = 250
+    } else if (score >= 5000) {
+      timer = 350
+    } else if (score >= 2000) {
+      timer = 500
     }
     if (delta > timer) {
       tetroPiece.moveDown()
