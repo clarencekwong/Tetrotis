@@ -411,7 +411,7 @@ document.addEventListener('DOMContentLoaded', e=> {
     document.querySelector('.start-menu').innerHTML += `
     <ul>
     <button id="startgame" class="button">start game</button><br><br><br>
-    <button id="top50" class="button">top 50 scores</button><br><br><br>
+    <button id="top50" class="button">top 50</button><br><br><br>
     </ul>
     `
     gameBGM.stop()
