@@ -2,7 +2,12 @@ document.addEventListener('DOMContentLoaded', e=> {
   let allTetromino = [tshape,line,square,jshape,lshape,sshape,zshape]
   let width = 10
   let height = 20
-  let colors = ['indianred','rosybrown','peachpuff', 'slateblue', 'thistle', 'lightblue', 'lightpink', 'burlywood' ]
+  let classicColors = ['indianred','rosybrown', 'slateblue', 'thistle', 'coral', 'cornflowerblue','lightblue', 'lightpink', 'burlywood' ]
+  let waterfrontColors = ['antiquewhite', 'dodgerblue', 'deepskyblue','moccasin', 'powderblue', 'antiquewhite', 'royalblue']
+  let moodColors = ['indigo', 'midnightblue', 'darkblue', 'darkslateblue', 'navy', 'steelblue', 'rebeccapurple']
+  let futureColors = ['springgreen', 'red', 'aquamarine', 'hotpink', 'yellow', 'darkslategrey','Chartreuse', 'deeppink']
+  let cementColors = ['darkgrey', 'silver', 'grey', 'dimgrey', 'lightslategrey']
+  let colors = classicColors
   let selTetro = randomTetromino()
   let color = randomColor()
   let rotate = randomRotation(selTetro)
@@ -21,6 +26,7 @@ document.addEventListener('DOMContentLoaded', e=> {
   const tetrisGrid = document.querySelector('.tetris-grid')
   const mainMenu = document.querySelector('.start-menu')
   const gameScoreBoard = document.querySelector('.score-board')
+  const colorMenu = document.querySelector("#colorMenu")
 
 
   function randomColor() {
@@ -364,6 +370,10 @@ document.addEventListener('DOMContentLoaded', e=> {
   })
 
   restartBtn.addEventListener('click', e => {
+    selTetro = randomTetromino()
+    color = randomColor()
+    rotate = randomRotation(selTetro)
+    tetroPiece = new Tetromino(allTetromino[selTetro],color,rotate)
     gameOver = false
     submissionField.style.display = 'none'
     score = 0
@@ -378,7 +388,9 @@ document.addEventListener('DOMContentLoaded', e=> {
     tetrisGrid.innerHTML = ''
     submissionField.style.display = 'none'
     gameScoreBoard.innerHTML = ''
+    randomColor()
     renderStartMenu()
+    gameOver = false
     selTetro = randomTetromino()
     color = randomColor()
     rotate = randomRotation(selTetro)
@@ -411,11 +423,40 @@ document.addEventListener('DOMContentLoaded', e=> {
     document.querySelector('.start-menu').innerHTML += `
     <ul>
     <button id="startgame" class="button">start game</button><br><br><br>
-    <button id="top50" class="button">top 50 scores</button>
+    <button id="top50" class="button">top 50 scores</button><br><br><br>
     </ul>
     `
     gameBGM.stop()
   }
+
+
+    function changeColorSet(e){
+      e = e.target.value
+      if (e == "classicColors") {
+        console.log(colors)
+        colors = classicColors
+        console.log(colors)
+      } else if (e == "waterfrontColors") {
+        console.log(colors)
+        colors = waterfrontColors
+        console.log(colors)
+      } else if (e == "moodColors") {
+        console.log(colors)
+        colors = moodColors
+        console.log(colors)
+      } else if (e == "futureColors") {
+        console.log(colors)
+        colors = futureColors
+        console.log(colors)
+      } else if (e == "cementColors") {
+        console.log(colors)
+        colors = cementColors
+        console.log(colors)
+      }
+      randomColor()
+    }
+
+
 
   document.querySelector('.start-menu').addEventListener("click", e=>{
     let indexCount = 1
@@ -478,12 +519,14 @@ document.addEventListener('DOMContentLoaded', e=> {
   renderSounds()
   renderStartMenu()
 
+
   const gameBGMAudio = document.querySelector('body > audio:nth-child(8)')
 
   gameBGMAudio.addEventListener('ended', function() {
     this.currentTime = 0;
     this.play();
   }, false);
+  colorMenu.addEventListener("change", changeColorSet)
 
 
 
