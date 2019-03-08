@@ -174,86 +174,72 @@ document.addEventListener('DOMContentLoaded', e=> {
   Tetromino.prototype.lock = function() {
     let scoreboard = document.querySelector('.score-board > div')
     let scoreboard2 = document.querySelector('.score')
-    for (let i = 0; i < this.currentPiece.length; i++) {
-      let x = this.currentPiece[i][0] + this.location[0]
-      let y = this.currentPiece[i][1] + this.location[1]
-      document.querySelector(`[data-x="${x}"][data-y="${y}"]`).dataset.state = "1"
-      let tetrisGrid = document.querySelector('.tetris-grid')
-      // debugger
-      if (this.location[0] === 4 && this.location[1] === 0) {
-        gameOver = true
-        console.log('lost')
-        submitScore()
-        gameOverSound.play()
-        break;
+    for (let r = 0; r < this.currentPiece.length; r++) {
+      for (let c = 0; c < this.currentPiece.length; c++) {
+        let x = this.currentPiece[c][0] + this.location[0]
+        let y = this.currentPiece[c][1] + this.location[1]
+        let blockColor = document.querySelector(`[data-x="${x}"][data-y="${y}"]`).style.color
+        if (this.location[0] === 4 && this.location[1] === 0) {
+          gameOver = true
+          console.log('lost')
+          submitScore()
+          gameOverSound.play()
+          break;
+        }
+        blockState = this.color
       }
     }
     let counter = 0
-    let start = 0
-    for (let c = 0; c < height; c++) {
-      let filled = true
-      for (let r = 0; r < width; r++) {
-        let cell = document.querySelector(`[data-x="${r}"][data-y="${c}"]`)
-        if (cell.dataset.state === '0') {
-          filled = false
-          break;
-        }
+    for (let r = 0; r < height; r++) {
+      let filled = true;
+      for (let c = 0; c < width; c++) {
+        let cell = document.querySelector(`[data-x="${c}"][data-y="${r}"]`)
+        filled = filled && cell.style.backgroundColor != ''
       }
       if (filled) {
-        if (start === 0) {
-          start = c
-        }
         counter++
-        for (let i = 0; i < width; i++) {
-          let cell = document.querySelector(`[data-x="${i}"][data-y="${c}"]`)
-          cell.dataset.state = "0"
-          cell.classList.remove('filled')
-          cell.style.backgroundColor = "snow"
-          console.log('cleared a line')
+        for (let y = r; y > 1; y--) {
+          for (let c = 0; c < width; c++) {
+            let cell = document.querySelector(`[data-x="${c}"][data-y="${y}"]`)
+            let previousCell = document.querySelector(`[data-x="${c}"][data-y="${y-1}"]`)
+            // debugger
+            cell.style.backgroundColor = previousCell.style.backgroundColor
+            if (previousCell.classList.length === 2) {
+              continue;
+            } else {
+              cell.classList.remove('filled')
+            }
+          }
         }
-      }
-    }
-    if (counter > 0) {
-      switch (counter) {
-        case 1:
-          score += counter * 100
-          scoreboard.innerHTML = score
-          scoreboard2.innerHTML = score
-          clearLineSound.play()
-          break;
-        case 2:
-          score += counter * 150
-          scoreboard.innerHTML = score
-          scoreboard2.innerHTML = score
-          multiClearSound.play()
-          break;
-        case 3:
-          score += counter * 200
-          scoreboard.innerHTML = score
-          scoreboard2.innerHTML = score
-          multiClearSound.play()
-          break;
-        case 4:
-          score += counter * 300
-          scoreboard.innerHTML = score
-          scoreboard2.innerHTML = score
-          multiClearSound.play()
-          break;
-      }
-    }
-
-    for (let i = start-1; i >= 0; i--) {
-      for (let x = 0; x < width; x++) {
-        let y = i + counter;
-        let cell = document.querySelector(`[data-x="${x}"][data-y="${i}"]`)
-        let nextCell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`)
-        if (cell.dataset.state === "1") {
-          nextCell.style.backgroundColor = cell.style.backgroundColor
-          nextCell.dataset.state = "1"
-          nextCell.classList.add('filled')
-          cell.dataset.state = "0"
-          cell.classList.remove('filled')
-          cell.style.backgroundColor = "snow"
+        for (let c = 0; c < width; c++) {
+          let cell = document.querySelector(`[data-x="${0}"][data-y="${c}"]`)
+          cell.style.backgroundColor = 'snow'
+        }
+        switch (counter) {
+          case 1:
+            score += counter * 100
+            scoreboard.innerHTML = score
+            scoreboard2.innerHTML = score
+            clearLineSound.play()
+            break;
+          case 2:
+            score += counter * 150
+            scoreboard.innerHTML = score
+            scoreboard2.innerHTML = score
+            multiClearSound.play()
+            break;
+          case 3:
+            score += counter * 200
+            scoreboard.innerHTML = score
+            scoreboard2.innerHTML = score
+            multiClearSound.play()
+            break;
+          case 4:
+            score += counter * 300
+            scoreboard.innerHTML = score
+            scoreboard2.innerHTML = score
+            multiClearSound.play()
+            break;
         }
       }
     }
@@ -484,19 +470,4 @@ document.addEventListener('DOMContentLoaded', e=> {
     this.currentTime = 0;
     this.play();
   }, false);
-
-
-
-// MAIN MENU (div 300x500?) -> Start, help, leaderboard
-// START -> createboard() and start()
-// HELP -> instruction on the page?
-// LEADERBOARD -> show top 50?
-
-// GAME PAGE -> Score + board + top 10 leaderboard on the right?
-// Instructions?
-
-// GAME OVER SCREEN -> leave board on screen, enter name with submission
-// new game + quit
-
-// additional feature -> pause, passive score
 })
