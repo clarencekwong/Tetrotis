@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', e=> {
     gameOverSound = new Sound("assets/gameover.wav")
     rotateSound = new Sound("assets/186669__fordps3__computer-boop.wav")
     multiClearSound = new Sound("assets/242855__plasterbrain__friend-request.ogg")
-    gameBGM = new Sound("assets/179217__zagi2__kalinka-loop.wav")
+    gameBGM = new Sound("assets/bgm3.wav")
   }
 
   renderSounds()
@@ -518,16 +518,4 @@ document.addEventListener('DOMContentLoaded', e=> {
 
 
 
-// MAIN MENU (div 300x500?) -> Start, help, leaderboard
-// START -> createboard() and start()
-// HELP -> instruction on the page?
-// LEADERBOARD -> show top 50?
-
-// GAME PAGE -> Score + board + top 10 leaderboard on the right?
-// Instructions?
-
-// GAME OVER SCREEN -> leave board on screen, enter name with submission
-// new game + quit
-
-// additional feature -> pause, passive score
 })
