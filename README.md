@@ -1,29 +1,11 @@
 # Tetrotis
 
-Simple + cute JavaScript clone of Tetris.
+Simple + cute vanilla JavaScript clone of Tetris. This is repository is the front-end project of Tetrotis.
 
 ## Installation
 
-#### Backend
-
-If you wish to enable the leaderboard feature of Tetrotis, you must install the backend (found [here](https://github.com/purplesands/tetrotis-backend)). Install and run:
-+ `$ bundle`
-+ `$ rails s -p 3000`
-
-#### Frontend
-
-This repository contains Tetrotis's frontend. To install it, run:
-
-+ `$ git clone`
-+ `$ cd tetrotis`
-+ `$ open index.html`
+Fork and clone this project onto your local machine. `cd` into tetrotis folder and run `open index.html` to start playing.
 
 ## Known bugs
 
 + If the screen gets too busy, tiles will occasionally clear when not supposed to, or not clear when supposed to.
-
-### License
-
-Tetrotis is licensed under the MIT License.
-
-Copyright 2019 Joe Mullen + Clarence Kwong.
