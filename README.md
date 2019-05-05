@@ -14,7 +14,7 @@ If you wish to enable the leaderboard feature of Tetrotis, you must install the 
 
 This repository contains Tetrotis's frontend. To install it, run:
 
-+ `$ git clone git@github.com:purplesands/tetrotis.git`
++ `$ git clone`
 + `$ cd tetrotis`
 + `$ open index.html`
 
