@@ -1,6 +1,11 @@
 # Tetrotis
 
-Simple + cute vanilla JavaScript clone of Tetris. This is repository is the front-end project of Tetrotis.
+Simple + cute vanilla JavaScript clone of Tetris.
+
+![](https://media.giphy.com/media/XBWoMuK7gpyUVbalyp/source.gif)
+
+## Tetrotis Front-end
+Tetrotis is built with strictly just vanilla JavaScript and custom CSS styling.
 
 ## Installation
 
